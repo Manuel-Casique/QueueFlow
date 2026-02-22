@@ -15,9 +15,9 @@ export function MetricCard({ title, value, icon, colorClass }: Props) {
                 <div className={`p-3 rounded-lg ${colorClass}`}>
                     {icon}
                 </div>
-                <div>
-                    <p className="text-sm font-medium text-slate-500">{title}</p>
-                    <p className="text-xl font-bold">{value}</p>
+                <div className="overflow-hidden">
+                    <p className="text-sm font-medium text-slate-500 truncate">{title}</p>
+                    <p className="text-xl md:text-2xl font-bold truncate">{value}</p>
                 </div>
             </CardContent>
         </Card>

@@ -55,9 +55,9 @@ export function QueueForm({ modelType, lambda, setLambda, mu, setMu, nLimit, set
                         <AlertCircle className="w-4 h-4" />{error}
                     </div>
                 )}
-                <div className="mt-6 flex justify-end gap-3">
-                    <Button variant="outline" onClick={onClear}>Limpiar</Button>
-                    <Button onClick={onCalculate} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <Button variant="outline" onClick={onClear} className="w-full sm:w-auto">Limpiar</Button>
+                    <Button onClick={onCalculate} className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
                         <Calculator className="w-4 h-4 mr-2" />Calcular
                     </Button>
                 </div>

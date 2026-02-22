@@ -42,7 +42,7 @@ export function ProbabilityTable({ data }: Props) {
         </div>
         
         {totalPages > 1 && (
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center justify-between sm:justify-start gap-2 text-sm w-full sm:w-auto mt-2 md:mt-0">
             <span className="text-slate-500">Ir a página:</span>
             <select 
               className="border border-slate-300 rounded-md p-1 text-slate-700 bg-white"
@@ -80,20 +80,21 @@ export function ProbabilityTable({ data }: Props) {
         </div>
 
         {totalPages > 1 && (
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-slate-500">
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-slate-500 text-center sm:text-left">
               Mostrando del {startIndex + 1} al {Math.min(startIndex + itemsPerPage, data.length)} de {data.length} resultados
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1}
+                className="flex-1 sm:flex-none"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" /> Anterior
               </Button>
-              <div className="text-sm font-medium text-slate-700 px-2">
+              <div className="text-sm font-medium text-slate-700 px-2 whitespace-nowrap">
                 {currentPage} / {totalPages}
               </div>
               <Button 
@@ -101,6 +102,7 @@ export function ProbabilityTable({ data }: Props) {
                 size="sm" 
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
+                className="flex-1 sm:flex-none"
               >
                 Siguiente <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
