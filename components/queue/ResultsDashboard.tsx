@@ -16,36 +16,42 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
     {
       title: 'Ls (Clientes en sistema)',
       value: results.ls.toFixed(4),
+      unit: 'clientes',
       icon: <Users className="w-5 h-5 text-blue-600" />,
       colorClass: 'bg-blue-50'
     },
     {
       title: 'Lq (Clientes en cola)',
       value: results.lq.toFixed(4),
+      unit: 'clientes',
       icon: <Users className="w-5 h-5 text-indigo-600" />,
       colorClass: 'bg-indigo-50'
     },
     {
       title: 'Ws (Tiempo en sistema)',
       value: results.ws.toFixed(4),
+      unit: 'u',
       icon: <Clock className="w-5 h-5 text-emerald-600" />,
       colorClass: 'bg-emerald-50'
     },
     {
       title: 'Wq (Tiempo en cola)',
       value: results.wq.toFixed(4),
+      unit: 'u',
       icon: <Clock className="w-5 h-5 text-teal-600" />,
       colorClass: 'bg-teal-50'
     },
     {
       title: 'Rho (Utilización)',
-      value: `${(results.rho * 100).toFixed(2)}%`,
+      value: `${(results.rho * 100).toFixed(2)}`,
+      unit: '%',
       icon: <Percent className="w-5 h-5 text-amber-600" />,
       colorClass: 'bg-amber-50'
     },
     {
       title: 'P0 (Prob. vacío)',
-      value: `${(results.p0 * 100).toFixed(2)}%`,
+      value: `${(results.p0 * 100).toFixed(2)}`,
+      unit: '%',
       icon: <Zap className="w-5 h-5 text-purple-600" />,
       colorClass: 'bg-purple-50'
     },
@@ -56,12 +62,14 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
       {
         title: 'λ Efectiva',
         value: results.lambdaEf.toFixed(4),
+        unit: 'clientes/u',
         icon: <Activity className="w-5 h-5 text-orange-600" />,
         colorClass: 'bg-orange-50'
       },
       {
         title: 'λ Perdida',
         value: results.lambdaPerdida?.toFixed(4) || '0.0000',
+        unit: 'clientes/u',
         icon: <ArrowDownRight className="w-5 h-5 text-rose-600" />,
         colorClass: 'bg-rose-50'
       }
@@ -81,6 +89,7 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
             key={index}
             title={metric.title}
             value={metric.value}
+            unit={metric.unit}
             icon={metric.icon}
             colorClass={metric.colorClass}
           />
