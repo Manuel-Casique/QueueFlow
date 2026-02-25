@@ -60,6 +60,13 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
   if (modelType === 'finite' && results.lambdaEf !== undefined) {
     metrics.push(
       {
+        title: 'Ro (ρ)',
+        value: results.rho.toFixed(4),
+        unit: '',
+        icon: <Activity className="w-5 h-5 text-amber-600" />,
+        colorClass: 'bg-amber-50'
+      },
+      {
         title: 'λ Efectiva',
         value: results.lambdaEf.toFixed(4),
         unit: 'clientes/u',

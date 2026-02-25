@@ -18,12 +18,17 @@ export function useQueueCalculator() {
     const wq = rho / (m - l);
 
     const probDist = [];
-    let currentPn = 1;
     let index = 0;
-    while (currentPn > 0.00001 && index <= 25) {
-      currentPn = (1 - rho) * Math.pow(rho, index);
-      probDist.push({ n: index, prob: currentPn });
+    let currentPn = (1 - rho) * Math.pow(rho, index);
+    let nextPn = (1 - rho) * Math.pow(rho, index + 1);
+
+    probDist.push({ n: index, prob: currentPn });
+
+    while (Math.abs(currentPn - nextPn) >= 0.0001 && index < 1000) {
       index++;
+      currentPn = nextPn;
+      nextPn = (1 - rho) * Math.pow(rho, index + 1);
+      probDist.push({ n: index, prob: currentPn });
     }
 
     setResults({ model: 'Sin límite en cola (M/M/1:DG/∞/∞)', lambda: l, mu: m, rho, p0, ls, lq, ws, wq, probDist });
