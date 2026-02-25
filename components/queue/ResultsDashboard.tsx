@@ -3,6 +3,7 @@ import { QueueResults, ModelType } from '@/types/queue';
 import { ProbabilityChart } from './ProbabilityChart';
 import { ProbabilityTable } from './ProbabilityTable';
 import { MetricCard } from './MetricCard';
+import { useEffect, useRef } from 'react';
 
 interface ResultsDashboardProps {
   results: QueueResults;
@@ -10,6 +11,16 @@ interface ResultsDashboardProps {
 }
 
 export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setTimeout(() => {
+        containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [results]);
+
   if (!results) return null;
 
   const metrics = [
@@ -84,7 +95,7 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div ref={containerRef} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
       <div className="flex items-center gap-2 text-slate-800 font-semibold border-b pb-2">
         <Activity className="w-5 h-5 text-emerald-600" />
         <h2>Resultados: {results.model}</h2>

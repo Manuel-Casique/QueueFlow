@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { ModelType, QueueResults } from '@/types/queue';
 
 export function useQueueCalculator() {
@@ -8,6 +8,7 @@ export function useQueueCalculator() {
   const [nLimit, setNLimit] = useState('');
   const [results, setResults] = useState<QueueResults | null>(null);
   const [error, setError] = useState('');
+  const [isCalculating, setIsCalculating] = useState(false);
 
   const calculateInfinite = (l: number, m: number) => {
     const rho = l / m;
@@ -62,7 +63,11 @@ export function useQueueCalculator() {
     setResults({ model: 'Con límite en cola (M/M/1:DG/N/∞)', lambda: l, mu: m, N, rho, p0, ls, lq, ws, wq, lambdaEf, lambdaPerdida, probDist });
   };
 
-  const handleCalculate = () => {
+  const handleCalculate = useCallback((e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
     setError('');
     setResults(null);
     const l = parseFloat(lambda);
@@ -74,20 +79,26 @@ export function useQueueCalculator() {
       return;
     }
 
-    if (modelType === 'infinite') {
-      if (l >= m) {
-        setError('El sistema es inestable. Lambda (λ) debe ser menor que Mu (μ).');
-        return;
-      }
-      calculateInfinite(l, m);
-    } else {
-      if (isNaN(n) || n <= 0) {
-        setError('Por favor ingrese un límite de cola válido (N > 0).');
-        return;
-      }
-      calculateFinite(l, m, n);
+    if (modelType === 'infinite' && l >= m) {
+      setError('El sistema es inestable. Lambda (λ) debe ser menor que Mu (μ).');
+      return;
     }
-  };
+    if (modelType === 'finite' && (isNaN(n) || n <= 0)) {
+      setError('Por favor ingrese un límite de cola válido (N > 0).');
+      return;
+    }
+
+    setIsCalculating(true);
+    
+    setTimeout(() => {
+      if (modelType === 'infinite') {
+        calculateInfinite(l, m);
+      } else {
+        calculateFinite(l, m, n);
+      }
+      setIsCalculating(false);
+    }, 600); // Simulated delay for visual feedback
+  }, [lambda, mu, nLimit, modelType]);
 
   const handleClear = () => {
     setLambda('');
@@ -95,6 +106,7 @@ export function useQueueCalculator() {
     setNLimit('');
     setResults(null);
     setError('');
+    setIsCalculating(false);
   };
 
   return {
@@ -103,6 +115,7 @@ export function useQueueCalculator() {
     mu, setMu,
     nLimit, setNLimit,
     results, error,
+    isCalculating,
     handleCalculate, handleClear
   };
 }

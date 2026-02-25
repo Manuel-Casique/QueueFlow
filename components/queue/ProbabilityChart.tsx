@@ -25,7 +25,7 @@ export function ProbabilityChart({ data }: Props) {
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full mt-4">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer className="w-full h-full">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />

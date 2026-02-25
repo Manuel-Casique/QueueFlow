@@ -12,6 +12,7 @@ export default function QueueFlowPage() {
     mu, setMu,
     nLimit, setNLimit,
     results, error,
+    isCalculating,
     handleCalculate, handleClear
   } = useQueueCalculator();
 
@@ -30,14 +31,17 @@ export default function QueueFlowPage() {
           mu={mu} setMu={setMu}
           nLimit={nLimit} setNLimit={setNLimit}
           error={error}
+          isCalculating={isCalculating}
           onCalculate={handleCalculate}
           onClear={handleClear}
         />
 
-        <ResultsDashboard 
-          results={results!} 
-          modelType={modelType} 
-        />
+        {results && (
+          <ResultsDashboard 
+            results={results} 
+            modelType={modelType} 
+          />
+        )}
 
       </div>
     </div>
