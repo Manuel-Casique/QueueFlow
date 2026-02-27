@@ -1,0 +1,17 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: queueflow_dev
+    working_dir: /app
+    volumes:
+      - .:/app                # código fuente en vivo (hot-reload)
+      - /app/node_modules     # node_modules aislado del host
+      - /app/.next            # cache de Next.js aislado
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    command: sh -c "pnpm install && pnpm dev"

@@ -1,0 +1,11 @@
+# ─────────────────────────────────────────────
+# Contenedor de desarrollo: Next.js (solo Node)
+# ─────────────────────────────────────────────
+FROM node:22-slim
+
+# pnpm via corepack
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+EXPOSE 3000
