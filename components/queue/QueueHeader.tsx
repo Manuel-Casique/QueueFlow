@@ -9,7 +9,7 @@ export function QueueHeader({ modelType, setModelType }: Props) {
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">QueueFlow</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">ColaFlow</h1>
                 <p className="text-slate-500">Calculadora de Líneas de Espera (Servidor Único)</p>
             </div>
             <div className="flex w-full md:w-auto bg-slate-200/50 p-1 rounded-lg">
