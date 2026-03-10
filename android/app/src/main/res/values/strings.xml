@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">QueueFlow</string>
+    <string name="title_activity_main">QueueFlow</string>
+    <string name="package_name">com.queueflow</string>
+    <string name="custom_url_scheme">com.queueflow</string>
+</resources>

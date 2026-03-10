@@ -1,0 +1,48 @@
+# Dependencias de Node.js
+node_modules
+.pnpm-store
+
+# Build de Next.js
+.next
+out
+
+# Archivos de entorno (no meter secrets en la imagen)
+.env
+.env.*
+!.env.example
+
+# Control de versiones
+.git
+.gitignore
+
+# Archivos de editor / IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Archivos de SO
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Coverage y tests
+coverage
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# Documentación (no necesaria en la imagen)
+README.md
+
+# Docker (no copiar los propios archivos de docker)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
