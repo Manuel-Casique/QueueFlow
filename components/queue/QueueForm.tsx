@@ -3,12 +3,14 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ModelType } from '@/types/queue';
+import { ModelType, ServerModel } from '@/types/queue';
 
 interface Props {
     modelType: ModelType;
+    serverModel: ServerModel;
     lambda: string; setLambda: (v: string) => void;
     mu: string; setMu: (v: string) => void;
+    servers: string; setServers: (v: string) => void;
     nLimit: string; setNLimit: (v: string) => void;
     error: string;
     isCalculating: boolean;
@@ -16,7 +18,7 @@ interface Props {
     onClear: () => void;
 }
 
-export function QueueForm({ modelType, lambda, setLambda, mu, setMu, nLimit, setNLimit, error, isCalculating, onCalculate, onClear }: Props) {
+export function QueueForm({ modelType, serverModel, lambda, setLambda, mu, setMu, servers, setServers, nLimit, setNLimit, error, isCalculating, onCalculate, onClear }: Props) {
     return (
         <Card className="border-slate-200">
             <CardHeader>
@@ -27,7 +29,7 @@ export function QueueForm({ modelType, lambda, setLambda, mu, setMu, nLimit, set
             </CardHeader>
             <CardContent>
                 <form onSubmit={onCalculate}>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="lambda">Tasa de Llegada (λ)</Label>
                             <div className="relative">
@@ -42,6 +44,15 @@ export function QueueForm({ modelType, lambda, setLambda, mu, setMu, nLimit, set
                                 <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none"><span className="text-sm text-slate-400">clientes/u</span></div>
                             </div>
                         </div>
+                        {serverModel === 'multi' && (
+                            <div className="space-y-2">
+                                <Label htmlFor="servers">Servidores (s)</Label>
+                                <div className="relative">
+                                    <Input id="servers" type="number" step="1" placeholder="Ej. 2" value={servers} onChange={(e) => setServers(e.target.value)} disabled={isCalculating} />
+                                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none"><span className="text-sm text-slate-400">cantidad</span></div>
+                                </div>
+                            </div>
+                        )}
                         {modelType === 'finite' && (
                             <div className="space-y-2">
                                 <Label htmlFor="nLimit">Límite del Sistema (N)</Label>

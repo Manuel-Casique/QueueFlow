@@ -1,4 +1,5 @@
 export type ModelType = 'infinite' | 'finite';
+export type ServerModel = 'single' | 'multi';
 
 export interface ProbRow {
   n: number;
@@ -10,6 +11,7 @@ export interface QueueResults {
   lambda: number;
   mu: number;
   N?: number;
+  s?: number;
   rho: number;
   p0: number;
   ls: number;
