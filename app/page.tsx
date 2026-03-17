@@ -19,7 +19,7 @@ export default function QueueFlowPage() {
   } = useQueueCalculator();
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 pb-24 sm:pb-8 md:p-8 mt-4 font-sans">
+    <div className="min-h-dvh bg-slate-50 text-slate-900 p-4 pb-24 sm:pb-8 md:p-8 font-sans">
       <div className="max-w-5xl mx-auto space-y-6">
         
         <QueueHeader 

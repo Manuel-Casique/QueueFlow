@@ -53,10 +53,17 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
       colorClass: 'bg-teal-50'
     },
     {
-      title: 'Rho (Utilización)',
-      value: `${(results.rho * 100).toFixed(2)}`,
+      title: 'U (Utilización)',
+      value: `${(results.utilization * 100).toFixed(2)}`,
       unit: '%',
       icon: <Percent className="w-5 h-5 text-amber-600" />,
+      colorClass: 'bg-amber-50'
+    },
+    {
+      title: 'Rho (ρ)',
+      value: results.rho.toFixed(4),
+      unit: 'u',
+      icon: <Activity className="w-5 h-5 text-amber-600" />,
       colorClass: 'bg-amber-50'
     },
     {
@@ -65,6 +72,20 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
       unit: '%',
       icon: <Zap className="w-5 h-5 text-purple-600" />,
       colorClass: 'bg-purple-50'
+    },
+    {
+      title: 'C (Prob. esperar)',
+      value: `${(results.C * 100).toFixed(2)}`,
+      unit: '%',
+      icon: <Clock className="w-5 h-5 text-red-600" />,
+      colorClass: 'bg-red-50'
+    },
+    {
+      title: 'C* (Prob. NO esperar)',
+      value: `${(results.C_asterisk * 100).toFixed(2)}`,
+      unit: '%',
+      icon: <Clock className="w-5 h-5 text-emerald-600" />,
+      colorClass: 'bg-emerald-50'
     },
   ];
 

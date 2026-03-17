@@ -13,6 +13,7 @@ export interface QueueResults {
   N?: number;
   s?: number;
   rho: number;
+  utilization: number;
   p0: number;
   ls: number;
   lq: number;
@@ -20,5 +21,7 @@ export interface QueueResults {
   wq: number;
   lambdaEf?: number;
   lambdaPerdida?: number;
+  C: number;
+  C_asterisk: number;
   probDist: ProbRow[];
 }

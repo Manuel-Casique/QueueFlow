@@ -21,7 +21,8 @@ export function useQueueCalculator() {
   const [isCalculating, setIsCalculating] = useState(false);
 
   const calculateInfinite = (l: number, m: number, s: number) => {
-    const rho = l / (s * m);
+    const rho = l / m;
+    const utilization = l / (s * m);
     
     let p0 = 0;
     let ls = 0;
@@ -30,20 +31,20 @@ export function useQueueCalculator() {
     let wq = 0;
 
     if (s === 1) {
-      p0 = 1 - rho;
-      ls = rho / (1 - rho);
-      lq = Math.pow(rho, 2) / (1 - rho);
+      p0 = 1 - utilization;
+      ls = utilization / (1 - utilization);
+      lq = Math.pow(utilization, 2) / (1 - utilization);
       ws = 1 / (m - l);
-      wq = rho / (m - l);
+      wq = utilization / (m - l);
     } else {
       let sum = 0;
       for (let n = 0; n < s; n++) {
-        sum += Math.pow(l / m, n) / factorial(n);
+        sum += Math.pow(rho, n) / factorial(n);
       }
-      p0 = 1 / (sum + (Math.pow(l / m, s) / (factorial(s) * (1 - rho))));
+      p0 = 1 / (sum + (Math.pow(rho, s) / (factorial(s) * (1 - utilization))));
       
-      lq = (p0 * Math.pow(l / m, s) * rho) / (factorial(s) * Math.pow(1 - rho, 2));
-      ls = lq + (l / m);
+      lq = (p0 * Math.pow(rho, s) * utilization) / (factorial(s) * Math.pow(1 - utilization, 2));
+      ls = lq + rho;
       wq = lq / l;
       ws = wq + (1 / m);
     }
@@ -51,37 +52,41 @@ export function useQueueCalculator() {
     const probDist = [];
     let index = 0;
     let currentPn = s === 1 
-      ? (1 - rho) * Math.pow(rho, index)
+      ? (1 - utilization) * Math.pow(utilization, index)
       : (index < s 
-          ? (Math.pow(l / m, index) / factorial(index)) * p0 
-          : (Math.pow(l / m, index) / (factorial(s) * Math.pow(s, index - s))) * p0);
+          ? (Math.pow(rho, index) / factorial(index)) * p0 
+          : (Math.pow(rho, index) / (factorial(s) * Math.pow(s, index - s))) * p0);
     
     let nextPn = s === 1
-      ? (1 - rho) * Math.pow(rho, index + 1)
+      ? (1 - utilization) * Math.pow(utilization, index + 1)
       : ((index + 1) < s 
-          ? (Math.pow(l / m, index + 1) / factorial(index + 1)) * p0 
-          : (Math.pow(l / m, index + 1) / (factorial(s) * Math.pow(s, (index + 1) - s))) * p0);
+          ? (Math.pow(rho, index + 1) / factorial(index + 1)) * p0 
+          : (Math.pow(rho, index + 1) / (factorial(s) * Math.pow(s, (index + 1) - s))) * p0);
 
     probDist.push({ n: index, prob: currentPn });
 
-    while (Math.abs(currentPn - nextPn) >= 0.0001 && index < 1000) {
+    while ((index < s || Math.abs(currentPn - nextPn) >= 0.0001 || nextPn >= 0.0001) && index < 1000) {
       index++;
       currentPn = nextPn;
       nextPn = s === 1
-        ? (1 - rho) * Math.pow(rho, index + 1)
+        ? (1 - utilization) * Math.pow(utilization, index + 1)
         : ((index + 1) < s 
-            ? (Math.pow(l / m, index + 1) / factorial(index + 1)) * p0 
-            : (Math.pow(l / m, index + 1) / (factorial(s) * Math.pow(s, (index + 1) - s))) * p0);
+            ? (Math.pow(rho, index + 1) / factorial(index + 1)) * p0 
+            : (Math.pow(rho, index + 1) / (factorial(s) * Math.pow(s, (index + 1) - s))) * p0);
             
       probDist.push({ n: index, prob: currentPn });
     }
 
+    const C = lq / rho; // Probability of waiting (Erlang C) or equivalent
+    const C_asterisk = 1 - C; // Complement probability
+
     const modelName = s === 1 ? 'Sin límite en cola (M/M/1:DG/∞/∞)' : `Multiservidor Infinito (M/M/${s}:DG/∞/∞)`;
-    setResults({ model: modelName, lambda: l, mu: m, s, rho, p0, ls, lq, ws, wq, probDist });
+    setResults({ model: modelName, lambda: l, mu: m, s, rho, utilization, p0, ls, lq, ws, wq, C, C_asterisk, probDist });
   };
 
   const calculateFinite = (l: number, m: number, N: number, s: number) => {
-    const rho = l / (s * m);
+    const rho = l / m;
+    const utilization = l / (s * m);
     let p0 = 0;
     let ls = 0;
     let lq = 0;
@@ -91,29 +96,29 @@ export function useQueueCalculator() {
     const probDist = [];
 
     if (s === 1) {
-      if (rho === 1) {
+      if (utilization === 1) {
         p0 = 1 / (N + 1);
         ls = N / 2;
       } else {
-        p0 = (1 - rho) / (1 - Math.pow(rho, N + 1));
-        ls = (rho * (1 - (N + 1) * Math.pow(rho, N) + N * Math.pow(rho, N + 1))) / ((1 - rho) * (1 - Math.pow(rho, N + 1)));
+        p0 = (1 - utilization) / (1 - Math.pow(utilization, N + 1));
+        ls = (utilization * (1 - (N + 1) * Math.pow(utilization, N) + N * Math.pow(utilization, N + 1))) / ((1 - utilization) * (1 - Math.pow(utilization, N + 1)));
       }
       
       for (let i = 0; i <= N; i++) {
-        const prob = rho === 1 ? 1 / (N + 1) : p0 * Math.pow(rho, i);
+        const prob = utilization === 1 ? 1 / (N + 1) : p0 * Math.pow(utilization, i);
         probDist.push({ n: i, prob });
       }
     } else {
       let sum = 0;
       for (let n = 0; n <= s; n++) {
-        sum += Math.pow(l / m, n) / factorial(n);
+        sum += Math.pow(rho, n) / factorial(n);
       }
       
       let sum2 = 0;
-      if (rho !== 1) {
-        sum2 = (Math.pow(l / m, s) / factorial(s)) * rho * ((1 - Math.pow(rho, N - s)) / (1 - rho));
+      if (utilization !== 1) {
+        sum2 = (Math.pow(rho, s) / factorial(s)) * utilization * ((1 - Math.pow(utilization, N - s)) / (1 - utilization));
       } else {
-        sum2 = (Math.pow(l / m, s) / factorial(s)) * (N - s);
+        sum2 = (Math.pow(rho, s) / factorial(s)) * (N - s);
       }
       
       p0 = 1 / (sum + sum2);
@@ -121,20 +126,20 @@ export function useQueueCalculator() {
       for (let n = 0; n <= N; n++) {
         let prob = 0;
         if (n < s) {
-          prob = (Math.pow(l / m, n) / factorial(n)) * p0;
+          prob = (Math.pow(rho, n) / factorial(n)) * p0;
         } else {
-          prob = (Math.pow(l / m, n) / (factorial(s) * Math.pow(s, n - s))) * p0;
+          prob = (Math.pow(rho, n) / (factorial(s) * Math.pow(s, n - s))) * p0;
         }
         probDist.push({ n, prob });
       }
 
       // probDist[N].prob will be used directly below
       
-      if (rho !== 1) {
-        lq = (p0 * Math.pow(l / m, s) * rho) / (factorial(s) * Math.pow(1 - rho, 2)) * 
-             (1 - Math.pow(rho, N - s) - (N - s) * Math.pow(rho, N - s) * (1 - rho));
+      if (utilization !== 1) {
+        lq = (p0 * Math.pow(rho, s) * utilization) / (factorial(s) * Math.pow(1 - utilization, 2)) * 
+             (1 - Math.pow(utilization, N - s) - (N - s) * Math.pow(utilization, N - s) * (1 - utilization));
       } else {
-        lq = (p0 * Math.pow(l / m, s)) / (factorial(s)) * ((N - s) * (N - s + 1) / 2);
+        lq = (p0 * Math.pow(rho, s)) / (factorial(s)) * ((N - s) * (N - s + 1) / 2);
       }
       
       let expectedService = 0;
@@ -162,8 +167,21 @@ export function useQueueCalculator() {
     ws = ls / lambdaEf;
     wq = lq / lambdaEf;
 
+    // Erlang C equivalent for finite queue
+    let C = 0;
+    if (s === 1) {
+      C = rho !== 1 ? rho * ((1 - Math.pow(rho, N)) / (1 - Math.pow(rho, N + 1))) : N / (N + 1);
+    } else {
+      let sumWait = 0;
+      for (let n = s; n <= N; n++) {
+        sumWait += probDist[n].prob;
+      }
+      C = sumWait;
+    }
+    const C_asterisk = 1 - C;
+
     const modelName = s === 1 ? 'Con límite en cola (M/M/1:DG/N/∞)' : `Multiservidor Finito (M/M/${s}:DG/N/∞)`;
-    setResults({ model: modelName, lambda: l, mu: m, N, s, rho, p0, ls, lq, ws, wq, lambdaEf, lambdaPerdida, probDist });
+    setResults({ model: modelName, lambda: l, mu: m, N, s, rho, utilization, p0, ls, lq, ws, wq, C, C_asterisk, lambdaEf, lambdaPerdida, probDist });
   };
 
   const handleCalculate = useCallback((e?: React.FormEvent) => {
