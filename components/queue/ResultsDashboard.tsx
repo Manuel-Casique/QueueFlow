@@ -1,4 +1,4 @@
-import { Activity, Users, Clock, Percent, Zap, ArrowDownRight } from 'lucide-react';
+import { Activity, Users, Clock, Percent, Zap, ArrowDownRight, Coffee } from 'lucide-react';
 import { QueueResults, ModelType } from '@/types/queue';
 import { ProbabilityChart } from './ProbabilityChart';
 import { ProbabilityTable } from './ProbabilityTable';
@@ -108,6 +108,25 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
     );
   }
 
+  if (results.activos !== undefined && results.inactivos !== undefined) {
+    metrics.push(
+      {
+        title: 'Servidores Activos',
+        value: results.activos.toFixed(4),
+        unit: 'serv',
+        icon: <Users className="w-5 h-5 text-indigo-600" />,
+        colorClass: 'bg-indigo-50'
+      },
+      {
+        title: 'Servidores Inactivos',
+        value: results.inactivos.toFixed(4),
+        unit: 'serv',
+        icon: <Coffee className="w-5 h-5 text-slate-600" />,
+        colorClass: 'bg-slate-100'
+      }
+    );
+  }
+
   return (
     <div ref={containerRef} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
       <div className="flex items-center gap-2 text-slate-800 font-semibold border-b pb-2">
@@ -115,7 +134,7 @@ export function ResultsDashboard({ results, modelType }: ResultsDashboardProps) 
         <h2>Resultados: {results.model}</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {metrics.map((metric, index) => (
           <MetricCard
             key={index}

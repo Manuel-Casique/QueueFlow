@@ -77,11 +77,21 @@ export function useQueueCalculator() {
       probDist.push({ n: index, prob: currentPn });
     }
 
-    const C = lq / rho; // Probability of waiting (Erlang C) or equivalent
-    const C_asterisk = 1 - C; // Complement probability
+    let C = 0;
+    let C_asterisk = 0;
+    for (const p of probDist) {
+      if (p.n >= s) {
+        C += p.prob;
+      } else {
+        C_asterisk += p.prob;
+      }
+    }
+
+    const activos = ls - lq;
+    const inactivos = s > activos ? s - activos : 0;
 
     const modelName = s === 1 ? 'Sin límite en cola (M/M/1:DG/∞/∞)' : `Multiservidor Infinito (M/M/${s}:DG/∞/∞)`;
-    setResults({ model: modelName, lambda: l, mu: m, s, rho, utilization, p0, ls, lq, ws, wq, C, C_asterisk, probDist });
+    setResults({ model: modelName, lambda: l, mu: m, s, rho, utilization, p0, ls, lq, ws, wq, C, C_asterisk, activos, inactivos, probDist });
   };
 
   const calculateFinite = (l: number, m: number, N: number, s: number) => {
@@ -167,21 +177,22 @@ export function useQueueCalculator() {
     ws = ls / lambdaEf;
     wq = lq / lambdaEf;
 
-    // Erlang C equivalent for finite queue
+    // Erlang C equivalent for finite queue recursively over the table
     let C = 0;
-    if (s === 1) {
-      C = rho !== 1 ? rho * ((1 - Math.pow(rho, N)) / (1 - Math.pow(rho, N + 1))) : N / (N + 1);
-    } else {
-      let sumWait = 0;
-      for (let n = s; n <= N; n++) {
-        sumWait += probDist[n].prob;
+    let C_asterisk = 0;
+    for (const p of probDist) {
+      if (p.n >= s) {
+        C += p.prob;
+      } else {
+        C_asterisk += p.prob;
       }
-      C = sumWait;
     }
-    const C_asterisk = 1 - C;
+
+    const activos = ls - lq;
+    const inactivos = s > activos ? s - activos : 0;
 
     const modelName = s === 1 ? 'Con límite en cola (M/M/1:DG/N/∞)' : `Multiservidor Finito (M/M/${s}:DG/N/∞)`;
-    setResults({ model: modelName, lambda: l, mu: m, N, s, rho, utilization, p0, ls, lq, ws, wq, C, C_asterisk, lambdaEf, lambdaPerdida, probDist });
+    setResults({ model: modelName, lambda: l, mu: m, N, s, rho, utilization, p0, ls, lq, ws, wq, C, C_asterisk, lambdaEf, lambdaPerdida, activos, inactivos, probDist });
   };
 
   const handleCalculate = useCallback((e?: React.FormEvent) => {

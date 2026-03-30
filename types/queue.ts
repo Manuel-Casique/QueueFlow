@@ -21,6 +21,8 @@ export interface QueueResults {
   wq: number;
   lambdaEf?: number;
   lambdaPerdida?: number;
+  activos?: number;
+  inactivos?: number;
   C: number;
   C_asterisk: number;
   probDist: ProbRow[];
